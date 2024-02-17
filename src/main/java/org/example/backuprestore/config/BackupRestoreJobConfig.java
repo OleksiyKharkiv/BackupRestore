@@ -1,7 +1,6 @@
 package org.example.backuprestore.config;
 package org.example.backuprestore.config;
 
-import org.example.backuprestore.model.UserWorkout;
 import org.example.backuprestore.processor.UserWorkoutItemProcessor;
 import org.example.backuprestore.reader.JsonBsonItemReader;
 import org.example.backuprestore.writer.MongoItemWriter;
