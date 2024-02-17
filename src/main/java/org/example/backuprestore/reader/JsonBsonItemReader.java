@@ -1,13 +1,14 @@
 package org.example.backuprestore.reader;
 
 import lombok.Setter;
+import org.bson.BsonReader;
 import org.bson.Document;
+import org.bson.codecs.Decoder;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.DocumentCodec;
 import org.bson.json.JsonReader;
 import org.springframework.batch.item.ItemReader;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +31,13 @@ public class JsonBsonItemReader<T> implements ItemReader<T> {
 
     private Iterator<T> readBsonFile() throws IOException {
         List<T> documents = new ArrayList<>();
-        try (InputStream inputStream = new FileInputStream(new File(bsonFilePath));
-             JsonReader jsonReader = new JsonReader(String.valueOf(inputStream))) {
+        try (InputStream inputStream = new FileInputStream(bsonFilePath);
+             BsonReader bsonReader = new JsonReader(String.valueOf(inputStream))) {
 
-            while (jsonReader.readStartDocument()) {
-                DocumentCodec codec = new DocumentCodec();
-                Document document = codec.decode(jsonReader, DecoderContext.builder().build());
-                documents.add((T) document);
+            bsonReader.readStartDocument();
+            Decoder<Document> decoder = new DocumentCodec();
+            while (bsonReader.readBsonType() != BsonReader.State.END_OF_DOCUMENT) {
+                documents.add((T) decoder.decode(bsonReader, DecoderContext.builder().build()));
             }
         }
         return documents.iterator();
