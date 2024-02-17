@@ -1,9 +1,7 @@
-package org.example.backuprestore.config;
+package org.example.backuprestore.reader;
+import lombok.Setter;
 import org.bson.Document;
-import org.bson.BsonDocument;
-import org.bson.codecs.Decoder;
-import org.bson.codecs.DecoderContext;
-import org.bson.codecs.DocumentCodec;
+import org.bson.json.JsonReader;
 import org.springframework.batch.item.ItemReader;
 
 import java.io.File;
@@ -14,13 +12,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@Setter
 public class JsonBsonItemReader<T> implements ItemReader<T> {
     private String bsonFilePath; // Путь к BSON файлу
     private Iterator<T> bsonIterator;
-
-    public void setBsonFilePath(String bsonFilePath) {
-        this.bsonFilePath = bsonFilePath;
-    }
 
     @Override
     public T read() throws Exception {
@@ -37,18 +32,10 @@ public class JsonBsonItemReader<T> implements ItemReader<T> {
     private Iterator<T> readBsonFile() throws IOException {
         List<T> documents = new ArrayList<>();
         InputStream inputStream = new FileInputStream(new File(bsonFilePath));
-        DocumentCodec decoder = new DocumentCodec();
-        while (true) {
-            try {
-                BsonDocument document = decoder.decode(inputStream, DecoderContext.builder().build()).toBsonDocument().toBsonDocument();
-                if (document != null) {
-                    documents.add((T) document);
-                } else {
-                    break;
-                }
-            } catch (Exception e) {
-                break;
-            }
+        JsonReader jsonReader = new JsonReader(inputStream);
+        jsonReader.setTreatEmptyJsonAsError(true); // обработка пустых строк в файле BSON
+        while (jsonReader.readBsonDocument() != null) {
+            documents.add((T) Document.parse(jsonReader.readBsonDocument().toJson()));
         }
         return documents.iterator();
     }
