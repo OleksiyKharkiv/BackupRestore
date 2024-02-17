@@ -1,7 +1,7 @@
 package org.example.backuprestore.reader;
-
 import lombok.Setter;
 import org.bson.BsonReader;
+import org.bson.BsonType;
 import org.bson.Document;
 import org.bson.codecs.Decoder;
 import org.bson.codecs.DecoderContext;
@@ -29,6 +29,7 @@ public class JsonBsonItemReader<T> implements ItemReader<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private Iterator<T> readBsonFile() throws IOException {
         List<T> documents = new ArrayList<>();
         try (InputStream inputStream = new FileInputStream(bsonFilePath);
@@ -36,7 +37,7 @@ public class JsonBsonItemReader<T> implements ItemReader<T> {
 
             bsonReader.readStartDocument();
             Decoder<Document> decoder = new DocumentCodec();
-            while (bsonReader.readBsonType() != BsonReader.State.END_OF_DOCUMENT) {
+            while (bsonReader.readBsonType() != BsonType.END_OF_DOCUMENT) { // Используем BsonType.END_OF_DOCUMENT
                 documents.add((T) decoder.decode(bsonReader, DecoderContext.builder().build()));
             }
         }
