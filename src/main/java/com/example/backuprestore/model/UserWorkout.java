@@ -1,4 +1,4 @@
-package org.example.backuprestore.model;
+package com.example.backuprestore.model;
 
 import lombok.Data;
 import org.bson.types.ObjectId;

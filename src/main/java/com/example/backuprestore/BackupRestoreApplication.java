@@ -1,4 +1,4 @@
-package org.example.backuprestore;
+package com.example.backuprestore;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

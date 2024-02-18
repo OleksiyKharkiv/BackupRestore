@@ -1,4 +1,4 @@
-package org.example.backuprestore.reader;
+package com.example.backuprestore.reader;
 import lombok.Setter;
 import org.bson.BsonReader;
 import org.bson.BsonType;

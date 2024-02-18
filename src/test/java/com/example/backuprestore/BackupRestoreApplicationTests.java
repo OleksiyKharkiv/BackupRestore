@@ -1,4 +1,4 @@
-package org.example.backuprestore;
+package com.example.backuprestore;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package org.example.backuprestore.service;
+package com.example.backuprestore.service;
 
 import com.example.backuprestore.model.UserWorkout;
 import com.example.backuprestore.reader.JsonBsonItemReader;
